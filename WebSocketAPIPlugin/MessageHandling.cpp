@@ -37,10 +37,21 @@ void OBSAPIMessageHandler::initializeMessageMap()
     messageMap[REQ_TOGGLE_MUTE] =                       OBSAPIMessageHandler::HandleToggleMute;
     messageMap[REQ_GET_VOLUMES] =                       OBSAPIMessageHandler::HandleGetVolumes;
     messageMap[REQ_SET_VOLUME] =                        OBSAPIMessageHandler::HandleSetVolume;
+	messageMap[REQ_SET_STREAMURL] =						OBSAPIMessageHandler::HandleSetStreamUrl;
+	messageMap[REQ_SET_STREAMPATH] =					OBSAPIMessageHandler::HandleSetStreamPath;
+	messageMap[REQ_START_STREAMING] =					OBSAPIMessageHandler::HandleStartStreaming; 
+	messageMap[REQ_STOP_STREAMING] =					OBSAPIMessageHandler::HandleStopStreaming;
 
     messagesNotRequiringAuth.insert(REQ_GET_VERSION);
     messagesNotRequiringAuth.insert(REQ_GET_AUTH_REQUIRED);
     messagesNotRequiringAuth.insert(REQ_AUTHENTICATE);
+	messagesNotRequiringAuth.insert(REQ_SET_STREAMURL);
+	messagesNotRequiringAuth.insert(REQ_SET_STREAMPATH);
+	messagesNotRequiringAuth.insert(REQ_STARTSTOP_STREAMING);
+	messagesNotRequiringAuth.insert(REQ_START_STREAMING);
+	messagesNotRequiringAuth.insert(REQ_STOP_STREAMING);
+	
+	
 
     mapInitialized = true;
 }
@@ -410,6 +421,18 @@ json_t* OBSAPIMessageHandler::HandleStartStopStreaming(OBSAPIMessageHandler* han
     return GetOkResponse();
 }
 
+json_t* OBSAPIMessageHandler::HandleStartStreaming(OBSAPIMessageHandler* handler, json_t* message)
+{
+		OBSStartStream();
+    return GetOkResponse();
+}
+
+json_t* OBSAPIMessageHandler::HandleStopStreaming(OBSAPIMessageHandler* handler, json_t* message)
+{
+		OBSStopStream();
+    return GetOkResponse();
+}
+
 json_t* OBSAPIMessageHandler::HandleToggleMute(OBSAPIMessageHandler* handler, json_t* message)
 {
     json_t* channel = json_object_get(message, "channel");
@@ -420,6 +443,8 @@ json_t* OBSAPIMessageHandler::HandleToggleMute(OBSAPIMessageHandler* handler, js
         if(stricmp(channelVal, "desktop") == 0)
         {
             OBSToggleDesktopMute();
+			UINT a;
+//			OBSSetStreamInfo(a,
         }
         else if(stricmp(channelVal, "microphone") == 0)
         {
@@ -499,6 +524,34 @@ json_t* OBSAPIMessageHandler::HandleSetVolume(OBSAPIMessageHandler* handler, jso
     {
         return GetErrorResponse("Channel not specified.");
     }
+    return GetOkResponse();
+}
+
+json_t* OBSAPIMessageHandler::HandleSetStreamUrl(OBSAPIMessageHandler* handler, json_t* message)
+{
+    json_t* streamurl = json_object_get(message, "streamurl");    
+
+    if(streamurl == NULL)
+    {
+        return GetErrorResponse("Stream URL not specified.");
+    }
+
+	String strStreamUrl = json_string_value(streamurl);	
+	OBSSetStreamUrl(strStreamUrl.Array());
+    return GetOkResponse();
+}
+
+json_t* OBSAPIMessageHandler::HandleSetStreamPath(OBSAPIMessageHandler* handler, json_t* message)
+{
+	json_t* streampath = json_object_get(message, "streampath");    
+
+    if(streampath == NULL)
+    {
+        return GetErrorResponse("Stream path not specified.");
+    }
+
+	String strStreamPath = json_string_value(streampath);	
+	OBSSetStreamPath(strStreamPath.Array());
     return GetOkResponse();
 }
 

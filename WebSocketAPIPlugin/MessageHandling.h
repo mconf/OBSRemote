@@ -44,6 +44,10 @@
 #define REQ_TOGGLE_MUTE "ToggleMute"
 #define REQ_GET_VOLUMES "GetVolumes"
 #define REQ_SET_VOLUME "SetVolume"
+#define REQ_SET_STREAMURL "SetStreamUrl"
+#define REQ_SET_STREAMPATH "SetStreamPath"
+#define REQ_START_STREAMING "StartStream"
+#define REQ_STOP_STREAMING "StopStream"
 
 struct OBSAPIMessageHandler;
 
@@ -83,6 +87,10 @@ struct OBSAPIMessageHandler
     static json_t* HandleToggleMute(OBSAPIMessageHandler* handler, json_t* message);
     static json_t* HandleGetVolumes(OBSAPIMessageHandler* handler, json_t* message);
     static json_t* HandleSetVolume(OBSAPIMessageHandler* handler, json_t* message);
+	static json_t* HandleSetStreamUrl(OBSAPIMessageHandler* handler, json_t* message);
+	static json_t* HandleSetStreamPath(OBSAPIMessageHandler* handler, json_t* message);
+	static json_t* HandleStartStreaming(OBSAPIMessageHandler* handler, json_t* message);
+	static json_t* HandleStopStreaming(OBSAPIMessageHandler* handler, json_t* message);
 
     struct libwebsocket *wsi;
     
