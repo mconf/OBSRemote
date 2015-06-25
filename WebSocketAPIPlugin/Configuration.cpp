@@ -158,7 +158,7 @@ void Config::load(const char *path)
 
     if(!json) {
 		/* didn't find config file, setup default password */
-		setAuth(true, OBS_REMOTE_DEFAULT_PASSWORD);
+		setAuth(false, OBS_REMOTE_DEFAULT_PASSWORD);	//default auth is false
 		save(path);
         return;        
     }
@@ -184,7 +184,7 @@ void Config::load(const char *path)
         return;
     }
 
-    this->useAuth = true;
+    this->useAuth = false;
     this->authHash = json_string_value(jAuthHash);
     this->authSalt = json_string_value(jAuthSalt);
 }
